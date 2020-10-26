@@ -33,8 +33,9 @@ class CommentForm extends Component {
 
     handleSubmit(values) {
         this.toggleModal();
-        console.log('Current State is: ' + JSON.stringify(values));
-        alert("Rating: " + values.rating +" Author: " + values.author+" Comment: " + values.comment);
+        this.props.addComment(this.props.dishId, values.rating, values.author, values.comment);
+        // console.log('Current State is: ' + JSON.stringify(values));
+        // alert("Rating: " + values.rating + " Author: " + values.author + " Comment: " + values.comment);
     }
 
     render() {
@@ -47,7 +48,7 @@ class CommentForm extends Component {
                     <ModalBody>
 
                         <LocalForm onSubmit={(values) => this.handleSubmit(values)}>
-                            
+
                             <Row className="form-group">
                                 <Label htmlFor="rating" md={12}>Rating</Label>
                                 <Col md={12}>
@@ -128,7 +129,7 @@ function RenderDish({ dish }) {
         );
 }
 
-function RenderComments({ coms }) {
+function RenderComments({ coms, addComment, dishId }) {
     if (coms != null) {
 
         var comments = coms.map((com) => {
@@ -155,7 +156,7 @@ function RenderComments({ coms }) {
                 <h4>Comments</h4>
                 {comments}
                 <div>
-                    <CommentForm></CommentForm>
+                    <CommentForm dishId={dishId} addComment={addComment} />
                 </div>
             </div>
         );
@@ -187,7 +188,9 @@ const DishDetail = (props) => {
                     <RenderDish dish={props.dish} />
                 </div>
                 <div className="col-12 col-md-5 m-1">
-                    <RenderComments coms={props.comments} />
+                    <RenderComments coms={props.comments}
+                        addComment={props.addComment}
+                        dishId={props.dish.id} />
                 </div>
             </div>
         </div>
