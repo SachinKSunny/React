@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom';
 import { Control, LocalForm, Errors } from 'react-redux-form';
 import { Loading } from './LoadingComponent';
 import { baseUrl } from '../shared/baseUrl';
+import { FadeTransform, Fade, Stagger } from 'react-animation-components';
 
 const maxLength = (len) => (val) => !(val) || (val.length <= len);
 const minLength = (len) => (val) => val && (val.length >= len);
@@ -116,13 +117,19 @@ class CommentForm extends Component {
 function RenderDish({ dish }) {
     if (dish != null)
         return (
-            <Card>
-                <CardImg top src={baseUrl + dish.image} alt={dish.name} />
-                <CardBody>
-                    <CardTitle>{dish.name}</CardTitle>
-                    <CardText>{dish.description}</CardText>
-                </CardBody>
-            </Card>
+            <FadeTransform
+                in
+                transformProps={{
+                    exitTransform: 'scale(0.5) translateY(-50%)'
+                }}>
+                <Card>
+                    <CardImg top src={baseUrl + dish.image} alt={dish.name} />
+                    <CardBody>
+                        <CardTitle>{dish.name}</CardTitle>
+                        <CardText>{dish.description}</CardText>
+                    </CardBody>
+                </Card>
+            </FadeTransform>
         );
 
     else
@@ -134,29 +141,23 @@ function RenderDish({ dish }) {
 function RenderComments({ coms, postComment, dishId }) {
     if (coms != null) {
 
-        var comments = coms.map((com) => {
-
-            return (
-                <ul key={com.id} className='list-unstyled'>
-                    <li>
-                        {com.comment}
-                    </li>
-                    <li>
-                        -- {com.author}, {}
-                        {
-                            new Intl.DateTimeFormat('en-US', {
-                                month: 'short', day: '2-digit', year: 'numeric'
-                            }).format(new Date(com.date))
-                        }
-                    </li>
-                </ul>
-            );
-        });
-
         return (
-            <div className='p-3'>
+            <div className='col-12 m-1'>
                 <h4>Comments</h4>
-                {comments}
+                <ul className="list-unstyled">
+                    <Stagger in>
+                        {coms.map((comment) => {
+                            return (
+                                <Fade in>
+                                    <li key={comment.id}>
+                                        <p>{comment.comment}</p>
+                                        <p>-- {comment.author} , {new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: '2-digit' }).format(new Date(Date.parse(comment.date)))}</p>
+                                    </li>
+                                </Fade>
+                            );
+                        })}
+                    </Stagger>
+                </ul>
                 <div>
                     <CommentForm dishId={dishId} postComment={postComment} />
                 </div>
@@ -184,9 +185,9 @@ const DishDetail = (props) => {
     }
 
     else if (props.errMess) {
-        return(
+        return (
             <div className="container">
-                <div className="row">            
+                <div className="row">
                     <h4>{props.errMess}</h4>
                 </div>
             </div>
