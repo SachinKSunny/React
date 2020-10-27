@@ -20,7 +20,7 @@ function RenderCard({ item, isLoading, errMess }) {
         );
     }
     else
-        return (
+        return (item?
             <FadeTransform
                 in
                 transformProps={{
@@ -34,7 +34,7 @@ function RenderCard({ item, isLoading, errMess }) {
                         <CardText>{item.description}</CardText>
                     </CardBody>
                 </Card>
-            </FadeTransform>
+            </FadeTransform>:null
         );
 
 }
@@ -50,7 +50,7 @@ function Home(props) {
                     <RenderCard item={props.promotion} isLoading={props.promoLoading} errMess={props.promoErrMess} />
                 </div>
                 <div className="col-12 col-md m-1">
-                    <RenderCard item={props.leader} />
+                    <RenderCard item={props.leader} isLoading={props.leaderLoading} errMess={props.leaderErrMess}/>
                 </div>
             </div>
         </div>
